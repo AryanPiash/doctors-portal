@@ -34,7 +34,7 @@ const Testimonial = () => {
         <div className='my-12'>
             <div className='flex justify-between items-center px-8'>
                 <div>
-                    <h3 className='text-secondary text-xl font-semibold'>Testimonial</h3>
+                    <h3 className='text-secondary text-xl font-semibold mb-4'>Testimonial</h3>
                     <h2 className='text-3xl'>What Our Patients Says</h2>
                 </div>
                 <div>
