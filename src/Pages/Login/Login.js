@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.init'
 import { useForm } from "react-hook-form";
@@ -8,7 +8,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 const Login = () => {
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
     const [signInWithEmailAndPassword, user, loading, error,] = useSignInWithEmailAndPassword(auth);
-
+    
     const { register, formState: { errors }, handleSubmit } = useForm();
     let navigate = useNavigate();
     let location = useLocation();
@@ -17,8 +17,7 @@ const Login = () => {
     const onSubmit = data => {
         console.log(data)
         signInWithEmailAndPassword(data.email, data.password)
-
-    };
+        };
 
     if (loading || gLoading) {
         return <LoadingSpinner></LoadingSpinner>
@@ -29,10 +28,12 @@ const Login = () => {
     }
 
     let signInError;
+
     if (error || gError) {
         signInError = <p className='text-red-500 mb-2'><small>{error?.message || gError?.message}</small></p>
     }
 
+    
     return (
         <div className='flex h-screen justify-center items-center'>
             <div className="card w-96 bg-base-100 shadow-xl">
@@ -82,6 +83,8 @@ const Login = () => {
                                     }
                                 })}
                             />
+                            <small className='pl-2 pt-1 underline text-primary'><Link to='/login'>Forgot Password?</Link></small>
+
                             <label className="label">
                                 {errors.password?.type === 'required' && <span className="label-text-alt text-red-400">{errors.password.message}</span>}
                                 {errors.password?.type === 'minLength' && <span className="label-text-alt text-red-400">{errors.password.message}</span>}
