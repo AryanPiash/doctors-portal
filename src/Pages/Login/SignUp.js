@@ -4,12 +4,15 @@ import auth from '../../firebase.init'
 import { useForm } from "react-hook-form";
 import LoadingSpinner from '../Shared/LoadingSpinner';
 import { Link, useNavigate } from 'react-router-dom';
+import useToken from '../../hooks/useToken';
 
 const SignUp = () => {
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
     const [createUserWithEmailAndPassword,user,loading,error,] = useCreateUserWithEmailAndPassword(auth);
     const { register, formState: { errors }, handleSubmit } = useForm();
     const [updateProfile, updating, updateError] = useUpdateProfile(auth);
+
+    const [token] = useToken(user || gUser)
     
     const navigate = useNavigate()
 
@@ -17,15 +20,15 @@ const SignUp = () => {
         console.log(data)
         await createUserWithEmailAndPassword(data.email,data.password)
         await updateProfile({ displayName: data.name });
-        navigate('/appointment')
+        
     };
 
     if(loading || gLoading || updating){
         return <LoadingSpinner></LoadingSpinner>
     }
 
-    if (user || gUser) {
-        console.log(user || gUser);
+    if (token) {
+        navigate('/appointment')
     }
 
     let signInError;

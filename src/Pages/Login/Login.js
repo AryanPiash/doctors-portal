@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.init'
 import { useForm } from "react-hook-form";
 import LoadingSpinner from '../Shared/LoadingSpinner';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import useToken from '../../hooks/useToken';
 
 const Login = () => {
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
     const [signInWithEmailAndPassword, user, loading, error,] = useSignInWithEmailAndPassword(auth);
-    
+
+    const [token] = useToken(user || gUser)
+
     const { register, formState: { errors }, handleSubmit } = useForm();
     let navigate = useNavigate();
     let location = useLocation();
@@ -17,13 +20,13 @@ const Login = () => {
     const onSubmit = data => {
         console.log(data)
         signInWithEmailAndPassword(data.email, data.password)
-        };
+    };
 
     if (loading || gLoading) {
         return <LoadingSpinner></LoadingSpinner>
     }
 
-    if (user || gUser) {
+    if (token) {
         navigate(from, { replace: true });
     }
 
@@ -33,7 +36,7 @@ const Login = () => {
         signInError = <p className='text-red-500 mb-2'><small>{error?.message || gError?.message}</small></p>
     }
 
-    
+
     return (
         <div className='flex h-screen justify-center items-center'>
             <div className="card w-96 bg-base-100 shadow-xl">
